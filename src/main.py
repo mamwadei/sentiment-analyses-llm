@@ -50,7 +50,7 @@ st.set_page_config(
     page_title="SociAllytics"
 )
 
-st.title("Social Analyzer")
+st.title("SociAllytics")
 
 
 if not "tweets" in st.session_state:
@@ -74,8 +74,8 @@ with col1:
                   help="Get your API key : https://platform.openai.com/account/api-keys")
     with st.form(key="twitter_handle_form",clear_on_submit=True):
         st.subheader("Add Twitter Account", anchor=False)
-        st.text_input("Analyze", key="twitter_handle" , placeholder="@twitter_username")
-        submit = st.form_submit_button(label="Add Tweets",on_click=on_add_author)
+        st.text_input("Twitter account", key="twitter_handle" , placeholder="@twitter_username")
+        submit = st.form_submit_button(label="Analyze",on_click=on_add_author)
     if st.session_state.twitter_handles:
         st.subheader("Twitter Accounts",anchor=False)
         for handle,name in st.session_state.twitter_handles.items():

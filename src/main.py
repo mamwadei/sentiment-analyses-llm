@@ -31,7 +31,7 @@ def on_add_author():
             if len(tweet_detail.comments) == 0:
                 continue
             tweets_details.append(tweet_detail)
-            if i == 3:
+            if i == 5:
                 break
             time.sleep(random.randint(2,3))
             
@@ -47,7 +47,7 @@ twitter_client = Twitter()
 
 st.set_page_config(
     layout="wide",
-    page_title="Social Analyzer"
+    page_title="SociAllytics"
 )
 
 st.title("Social Analyzer")
@@ -63,6 +63,8 @@ if not "tweets" in st.session_state:
 if st.session_state.error_message:
     st.error(st.session_state.error_message)
 
+#this  is only for hakathon an then will be deleted 
+st.session_state.api_key  = "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"
 os.environ["OPENAI_API_KEY"]= st.session_state.api_key
     
 col1, col2 = st.columns(2)
@@ -72,7 +74,7 @@ with col1:
                   help="Get your API key : https://platform.openai.com/account/api-keys")
     with st.form(key="twitter_handle_form",clear_on_submit=True):
         st.subheader("Add Twitter Account", anchor=False)
-        st.text_input("Twitter Account", key="twitter_handle" , placeholder="@twitter_username")
+        st.text_input("Analyze", key="twitter_handle" , placeholder="@twitter_username")
         submit = st.form_submit_button(label="Add Tweets",on_click=on_add_author)
     if st.session_state.twitter_handles:
         st.subheader("Twitter Accounts",anchor=False)

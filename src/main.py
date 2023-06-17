@@ -8,34 +8,41 @@ from typing import List,Dict
 import random
 import time
 import plotly.graph_objects as go
+import pandas as pd
 
 
 def on_add_author():
-    twitter_handle = st.session_state.twitter_handle
-    if twitter_handle.startswith("@"):
-        twitter_handle = twitter_handle[1:]
-    if twitter_handle in st.session_state.twitter_handles:
-        return
-    tweets_details=[]
-    all_tweets = twitter_client.get_tweets(twitter_handle)
-    if len(all_tweets) ==0:
-        return
-    time.sleep(random.randint(2,2))
-    for i, tweet in enumerate(all_tweets):
-        tweet_detail = twitter_client.tweet_detail(tweet.id)
-        if len(tweet_detail.comments) == 0:
-            continue
-        tweets_details.append(tweet_detail)
-        if i == 3:
-            break
-        time.sleep(random.randint(2,3))
-        
-    st.session_state.twitter_handles[twitter_handle] = all_tweets[0].author.name
-    st.session_state.tweets.extend(tweets_details)
-    st.session_state.author_sentiment[twitter_handle] = analyze_sentiment(twitter_handle,st.session_state.tweets)
-    # st.write(st.session_state.author_sentiment[twitter_handle])
+    try:
+        twitter_handle = st.session_state.twitter_handle
+        if twitter_handle == "":
+            st.session_state.error_message= "username is required"
+            return
+        if twitter_handle.startswith("@"):
+            twitter_handle = twitter_handle[1:]
+        if twitter_handle in st.session_state.twitter_handles:
+            return
+        tweets_details=[]
+        all_tweets = twitter_client.get_tweets(twitter_handle)
+        if len(all_tweets) ==0:
+            return
+        time.sleep(random.randint(2,2))
+        for i, tweet in enumerate(all_tweets):
+            tweet_detail = twitter_client.tweet_detail(tweet.id)
+            if len(tweet_detail.comments) == 0:
+                continue
+            tweets_details.append(tweet_detail)
+            if i == 3:
+                break
+            time.sleep(random.randint(2,3))
+            
+        st.session_state.twitter_handles[twitter_handle] = all_tweets[0].author.name
+        st.session_state.tweets.extend(tweets_details)
+        st.session_state.author_sentiment[twitter_handle] = analyze_sentiment(twitter_handle,st.session_state.tweets)
+        # st.write(st.session_state.author_sentiment[twitter_handle])
+    except Exception as e:
+        st.session_state.error_message = e
     
-    pass
+    
 twitter_client = Twitter()
 
 st.set_page_config(
@@ -51,6 +58,10 @@ if not "tweets" in st.session_state:
     st.session_state.api_key = ""
     st.session_state.twitter_handles ={}
     st.session_state.author_sentiment = {}
+    st.session_state.error_message = ''
+
+if st.session_state.error_message:
+    st.error(st.session_state.error_message)
 
 os.environ["OPENAI_API_KEY"]= st.session_state.api_key
     
@@ -70,6 +81,7 @@ with col1:
             st.markdown(f"{name}([{handle}](https://twitter.com/{handle}))")
     st.subheader("Tweets", anchor=False)
     st.dataframe(create_dataframe_from_tweets(st.session_state.tweets))
+    
 
 labels=["negative","natural","positive"] 
 with col2:

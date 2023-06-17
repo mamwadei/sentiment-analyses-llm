@@ -31,7 +31,7 @@ def on_add_author():
             if len(tweet_detail.comments) == 0:
                 continue
             tweets_details.append(tweet_detail)
-            if i == 3:
+            if i == 5:
                 break
             time.sleep(random.randint(2,3))
             

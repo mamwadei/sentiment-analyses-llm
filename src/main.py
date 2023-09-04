@@ -64,7 +64,7 @@ if st.session_state.error_message:
     st.error(st.session_state.error_message)
 
 #this  is only for hakathon an then will be deleted 
-st.session_state.api_key  = "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"
+st.session_state.api_key  = ""
 os.environ["OPENAI_API_KEY"]= st.session_state.api_key
     
 col1, col2 = st.columns(2)
